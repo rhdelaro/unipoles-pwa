@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/unipoles-pwa/sw.js', { scope: '/unipoles-pwa/' })})}
