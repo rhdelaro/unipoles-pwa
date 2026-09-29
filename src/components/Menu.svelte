@@ -2,6 +2,8 @@
   import { DIFFICULTIES, type Difficulty } from '../lib/puzzle';
   import { getBest, formatTime } from '../lib/storage';
   import { playClick } from '../lib/audio';
+  import unipoleImg from '../assets/unipole.png';
+  import metalImg from '../assets/metal.png';
 
   let { onStart }: { onStart: (d: Difficulty) => void } = $props();
 
@@ -29,7 +31,7 @@
 </script>
 
 <div class="screen">
-  <img class="logo" src="/icons/icon-512.png" alt="Unipoles logo" />
+  <img class="logo" src={import.meta.env.BASE_URL + 'icons/icon-512.png'} alt="Unipoles logo" />
   <h1 class="title">UNIPOLES</h1>
   <p class="tagline">a magnetic logic puzzle</p>
 
@@ -80,8 +82,8 @@
           <li>Use ✕ mode to mark cells you've ruled out. 💡 reveals a unipole when stuck.</li>
         </ul>
         <div class="legend">
-          <span><img src="/assets/unipole.png" alt="unipole" /> unipole</span>
-          <span><img src="/assets/metal.png" alt="metal" /> metal</span>
+          <span><img src={unipoleImg} alt="unipole" /> unipole</span>
+          <span><img src={metalImg} alt="metal" /> metal</span>
         </div>
       </div>
     {/if}

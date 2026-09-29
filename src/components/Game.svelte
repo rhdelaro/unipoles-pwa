@@ -17,6 +17,8 @@
     isMuted,
     toggleMuted,
   } from '../lib/audio';
+  import unipoleImg from '../assets/unipole.png';
+  import metalImg from '../assets/metal.png';
   import { getBest, setBest, formatTime } from '../lib/storage';
   import WinModal from './WinModal.svelte';
 
@@ -191,9 +193,9 @@
               aria-label={isMetal ? 'metal' : isPlaced ? 'unipole — tap to remove' : 'empty cell'}
             >
               {#if isMetal}
-                <img class="piece" src="/assets/metal.png" alt="" draggable="false" />
+                <img class="piece" src={metalImg} alt="" draggable="false" />
               {:else if isPlaced}
-                <img class="piece" src="/assets/unipole.png" alt="" draggable="false" />
+                <img class="piece" src={unipoleImg} alt="" draggable="false" />
               {:else if marks[i]}
                 <span class="mark">✕</span>
               {/if}
