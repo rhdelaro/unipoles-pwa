@@ -91,13 +91,16 @@
     }, 380);
   }
 
-  function checkWin() {
+  // Win detection runs on *every* board change — placing, removing, or hint.
+  // Previously it only ran after placing, so a solution completed by
+  // removing the last wrong piece never registered and the timer kept going.
+  $effect(() => {
     if (!won && isSolved(puzzle, placed)) {
       won = true;
       playWin();
       isRecord = setBest(difficulty.key, seconds);
     }
-  }
+  });
 
   function tap(i: number) {
     if (won) return;
@@ -127,7 +130,6 @@
     placed[i] = true;
     playPlace();
     moves++;
-    checkWin();
   }
 
   function useHint() {
@@ -143,7 +145,6 @@
       if (hintFlash === h) hintFlash = -1;
     }, 1000);
     playPlace();
-    checkWin();
   }
 
   function toggleMute() {
