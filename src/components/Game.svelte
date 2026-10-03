@@ -84,6 +84,30 @@
     }),
   );
 
+  const allSumsOk = $derived(
+    rowCounts.every((n, r) => n === puzzle.rowSums[r]) &&
+      colCounts.every((n, c) => n === puzzle.colSums[c]),
+  );
+
+  // Orthogonal metal coverage. Surfaced in the UI only once every sum is
+  // met — that's the "looks solved but isn't" moment, and the uncovered
+  // metals are exactly what's missing.
+  const metalCovered = $derived(
+    Array.from({ length: size * size }, (_, i) => {
+      if (!puzzle.metals[i]) return true;
+      const r = Math.floor(i / size);
+      const c = i % size;
+      return (
+        (r > 0 && placed[i - size]) ||
+        (r < size - 1 && placed[i + size]) ||
+        (c > 0 && placed[i - 1]) ||
+        (c < size - 1 && placed[i + 1])
+      );
+    }),
+  );
+
+  const uncoveredCount = $derived(metalCovered.filter((v) => !v).length);
+
   function shake(i: number) {
     shakeCell = i;
     window.setTimeout(() => {
@@ -188,6 +212,7 @@
               class="cell"
               class:metal={isMetal}
               class:placed={isPlaced}
+              class:uncovered={allSumsOk && isMetal && !metalCovered[i]}
               class:hint-flash={hintFlash === i}
               class:shake={shakeCell === i}
               onclick={() => tap(i)}
@@ -206,6 +231,14 @@
       {/each}
     </div>
   </div>
+
+  {#if allSumsOk && !won}
+    <div class="metal-note">
+      {uncoveredCount === 1
+        ? '1 pulsing metal still needs a neighboring unipole'
+        : `${uncoveredCount} pulsing metals still need a neighboring unipole`}
+    </div>
+  {/if}
 
   <div class="toolbar">
     <button class="tool" class:active={markMode} onclick={() => { markMode = !markMode; playClick(); }}>

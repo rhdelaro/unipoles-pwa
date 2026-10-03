@@ -243,8 +243,19 @@ export function isSolved(puzzle: Puzzle, placed: boolean[]): boolean {
 
 /** A solution cell the player hasn't found yet (for hints). */
 export function findHint(puzzle: Puzzle, placed: boolean[], rng: Rng = Math.random): number {
+  const { size } = puzzle;
   const cands = puzzle.solution
     .map((v, i) => (v && !placed[i] ? i : -1))
     .filter((i) => i >= 0);
-  return cands[Math.floor(rng() * cands.length)];
+  // Prefer cells that don't touch existing unipoles: a hint must never
+  // create an illegal adjacency (manual placement forbids it). Falls back
+  // to any remaining cell if every candidate touches.
+  const touchesPlaced = (i: number) => {
+    const r = Math.floor(i / size);
+    const c = i % size;
+    return neighborCells(size, r, c, true).some((n) => placed[n]);
+  };
+  const legal = cands.filter((i) => !touchesPlaced(i));
+  const pool = legal.length > 0 ? legal : cands;
+  return pool[Math.floor(rng() * pool.length)];
 }
